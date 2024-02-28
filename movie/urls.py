@@ -6,6 +6,7 @@ from movie.views import (
     MovieDetailAPIView,
     GenreListAPIView,
     GenreDetailAPIView,
+    ApiRoot,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("movies/<int:pk>/", MovieDetailAPIView.as_view(), name="movie-detail"),
     path("genres/", GenreListAPIView.as_view(), name="genre-list"),
     path("genres/<int:pk>/", GenreDetailAPIView.as_view(), name="genre-detail"),
+    path("", ApiRoot.as_view(), name="root"),
 ]

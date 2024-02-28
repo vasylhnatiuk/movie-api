@@ -1,12 +1,28 @@
+from audioop import reverse
+
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from django.shortcuts import get_object_or_404
 
 from movie.filters import MovieFilter, PersonFilter
 from movie.models import Person, Movie, Genre
 from movie.serializers import PersonSerializer, MovieSerializer, GenreSerializer
 from movie.utils import CustomPagination
+
+
+class ApiRoot(APIView):
+    def get(self, request, format=None):
+        return Response(
+            {
+                "people": reverse("person-list", request=request, format=format),
+                "actors": reverse("person-list", request=request, format=None) + "?specialization=Actor",
+                "directors": reverse("person-list", request=request, format=None) + "?specialization=Director",
+                "movies": reverse("movie-list", request=request, format=format),
+                "genres": reverse("genre-list", request=request, format=format),
+            }
+        )
 
 
 class PersonListAPIView(APIView):
