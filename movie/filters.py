@@ -6,8 +6,8 @@ from .models import Movie
 class MovieFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(lookup_expr="icontains")
     year = django_filters.NumberFilter(field_name="year")
-    actor = django_filters.NumberFilter(field_name="actors__id")
-    director = django_filters.NumberFilter(field_name="director__id")
+    actor = django_filters.CharFilter(field_name="actors__name")
+    director = django_filters.CharFilter(field_name="director__name")
 
     class Meta:
         model = Movie
