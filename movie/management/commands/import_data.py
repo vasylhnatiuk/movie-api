@@ -43,14 +43,14 @@ MOVIE_TITLES = [
     "The Matrix Reloaded",
     "The Matrix Revolutions",
     "Star Wars: Episode IV - A New Hope",
-    "Star Wars: Episode V - The Empire Strikes Back"
+    "Star Wars: Episode V - The Empire Strikes Back",
 ]
 
 OMDB_API_KEY = "f62367fe"
 
 
 class Command(BaseCommand):
-    help = 'Populate database with data from OMDB API'
+    help = "Populate database with data from OMDB API"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,9 +64,11 @@ class Command(BaseCommand):
                 print(data)
                 movie_data = self.extract_movie_data(data)
                 self.create_movie(movie_data)
-                self.stdout.write(self.style.SUCCESS(f'"{title}" imported successfully'))
+                self.stdout.write(
+                    self.style.SUCCESS(f'"{title}" imported successfully')
+                )
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f'Error importing {title}: {e}'))
+                self.stdout.write(self.style.ERROR(f"Error importing {title}: {e}"))
 
     def build_api_url(self, title):
         encoded_title = "+".join(title.split())
@@ -80,33 +82,40 @@ class Command(BaseCommand):
 
     @staticmethod
     def extract_movie_data(data):
-        genre_names = data.get('Genre', '').split(', ')
+        genre_names = data.get("Genre", "").split(", ")
         genres = [Genre.objects.get_or_create(name=genre)[0] for genre in genre_names]
 
-        director_name = data.get('Director', '')
-        director, _ = Person.objects.get_or_create(name=director_name, specialization=Person.DIRECTOR)
+        director_name = data.get("Director", "")
+        director, _ = Person.objects.get_or_create(
+            name=director_name, specialization=Person.DIRECTOR
+        )
 
-        actors_data = data.get('Actors', '').split(', ')
-        actors = [Person.objects.get_or_create(name=actor, specialization=Person.ACTOR)[0] for actor in actors_data]
+        actors_data = data.get("Actors", "").split(", ")
+        actors = [
+            Person.objects.get_or_create(name=actor, specialization=Person.ACTOR)[0]
+            for actor in actors_data
+        ]
 
         return {
-            'title': data.get('Title', ''),
-            'description': data.get('Plot', ''),
-            'duration': int(data.get('Runtime', '').split()[0]) if data.get('Runtime') else None,
-            'year': int(data.get('Year', '')) if data.get('Year') else None,
-            'director': director,
-            'genres': genres,
-            'actors': actors
+            "title": data.get("Title", ""),
+            "description": data.get("Plot", ""),
+            "duration": (
+                int(data.get("Runtime", "").split()[0]) if data.get("Runtime") else None
+            ),
+            "year": int(data.get("Year", "")) if data.get("Year") else None,
+            "director": director,
+            "genres": genres,
+            "actors": actors,
         }
 
     @staticmethod
     def create_movie(movie_data):
         movie, _ = Movie.objects.get_or_create(
-            title=movie_data['title'],
-            description=movie_data['description'],
-            duration=movie_data['duration'],
-            year=movie_data['year'],
-            director=movie_data['director']
+            title=movie_data["title"],
+            description=movie_data["description"],
+            duration=movie_data["duration"],
+            year=movie_data["year"],
+            director=movie_data["director"],
         )
-        movie.genres.set(movie_data['genres'])
-        movie.actors.set(movie_data['actors'])
+        movie.genres.set(movie_data["genres"])
+        movie.actors.set(movie_data["actors"])

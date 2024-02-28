@@ -8,42 +8,86 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('specialization', models.CharField(choices=[('Actor', 'Actor'), ('Director', 'Director')], default='Actor', max_length=255)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "specialization",
+                    models.CharField(
+                        choices=[("Actor", "Actor"), ("Director", "Director")],
+                        default="Actor",
+                        max_length=255,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'People',
+                "verbose_name_plural": "People",
             },
         ),
         migrations.CreateModel(
-            name='Movie',
+            name="Movie",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255, unique=True)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('duration', models.IntegerField(null=True)),
-                ('year', models.IntegerField(blank=True, null=True)),
-                ('genres', models.ManyToManyField(blank=True, to='movie.genre')),
-                ('actors', models.ManyToManyField(blank=True, related_name='actors_movies', to='movie.person')),
-                ('director', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='movies', to='movie.person')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255, unique=True)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("duration", models.IntegerField(null=True)),
+                ("year", models.IntegerField(blank=True, null=True)),
+                ("genres", models.ManyToManyField(blank=True, to="movie.genre")),
+                (
+                    "actors",
+                    models.ManyToManyField(
+                        blank=True, related_name="actors_movies", to="movie.person"
+                    ),
+                ),
+                (
+                    "director",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="movies",
+                        to="movie.person",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['title'],
+                "ordering": ["title"],
             },
         ),
     ]

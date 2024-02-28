@@ -30,7 +30,7 @@ class MovieSerializer(serializers.ModelSerializer):
             "genres",
             "actors",
             "year",
-            "director"
+            "director",
         )
 
     @staticmethod
@@ -48,12 +48,8 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class MovieListSerializer(MovieSerializer):
-    genres = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="name"
-    )
-    actors = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="name"
-    )
+    genres = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
+    actors = serializers.SlugRelatedField(many=True, read_only=True, slug_field="name")
     director = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
@@ -76,7 +72,7 @@ class MovieDetailSerializer(MovieSerializer):
             "genres",
             "actors",
             "image",
-            "director"
+            "director",
         )
 
 

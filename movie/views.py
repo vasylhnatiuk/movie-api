@@ -56,8 +56,10 @@ class MovieListAPIView(APIView):
 
     def get(self, request):
         movies = self.filter(
-            request.GET, queryset=Movie.objects.select_related(
-                "director").prefetch_related("genres", "actors")
+            request.GET,
+            queryset=Movie.objects.select_related("director").prefetch_related(
+                "genres", "actors"
+            ),
         ).qs
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(movies, request)
