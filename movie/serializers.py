@@ -73,4 +73,3 @@ class MovieDetailSerializer(MovieSerializer):
             "actors",
             "director",
         )
-

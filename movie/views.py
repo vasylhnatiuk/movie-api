@@ -10,8 +10,13 @@ from drf_spectacular.types import OpenApiTypes
 
 from movie.filters import MovieFilter, PersonFilter
 from movie.models import Person, Movie, Genre
-from movie.serializers import PersonSerializer, MovieSerializer, GenreSerializer, MovieListSerializer, \
-    MovieDetailSerializer
+from movie.serializers import (
+    PersonSerializer,
+    MovieSerializer,
+    GenreSerializer,
+    MovieListSerializer,
+    MovieDetailSerializer,
+)
 from movie.utils import CustomPagination
 
 
@@ -20,8 +25,10 @@ class ApiRoot(APIView):
         return Response(
             {
                 "people": reverse("person-list", request=request, format=format),
-                "actors": reverse("person-list", request=request, format=None) + "?specialization=Actor",
-                "directors": reverse("person-list", request=request, format=None) + "?specialization=Director",
+                "actors": reverse("person-list", request=request, format=None)
+                + "?specialization=Actor",
+                "directors": reverse("person-list", request=request, format=None)
+                + "?specialization=Director",
                 "movies": reverse("movie-list", request=request, format=format),
                 "genres": reverse("genre-list", request=request, format=format),
             }
@@ -46,7 +53,9 @@ class PersonListAPIView(APIView):
         responses={200: PersonSerializer(many=True)},
     )
     def get(self, request):
-        people = self.filter(request.GET, queryset=Person.objects.all()).qs
+        people = self.filter(
+            request.GET, queryset=Person.objects.all().order_by("id")
+        ).qs
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(people, request)
         serializer = PersonSerializer(result_page, many=True)
@@ -100,9 +109,9 @@ class MovieListAPIView(APIView):
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name="actor",
-                type=OpenApiTypes.INT,
-                description="Filter by actor ID",
+                name="title",
+                type=OpenApiTypes.STR,
+                description="Filter by title",
                 required=False,
                 location=OpenApiParameter.QUERY,
             ),
@@ -112,7 +121,12 @@ class MovieListAPIView(APIView):
                 description="Filter by director name",
                 required=False,
                 location=OpenApiParameter.QUERY,
-                enum=[option for option in Person.objects.filter(specialization=Person.DIRECTOR).values_list("name", flat=True)],
+                enum=[
+                    option
+                    for option in Person.objects.filter(
+                        specialization=Person.DIRECTOR
+                    ).values_list("name", flat=True)
+                ],
             ),
             OpenApiParameter(
                 name="year",
@@ -127,19 +141,22 @@ class MovieListAPIView(APIView):
                 description="Filter by actor name",
                 required=False,
                 location=OpenApiParameter.QUERY,
-                enum=[option for option in Person.objects.filter(specialization=Person.ACTOR).values_list("name", flat=True)],
+                enum=[
+                    option
+                    for option in Person.objects.filter(
+                        specialization=Person.ACTOR
+                    ).values_list("name", flat=True)
+                ],
             ),
         ],
-
         responses={200: MovieSerializer(many=True)},
     )
-
     def get(self, request):
         movies = self.filter(
             request.GET,
-            queryset=Movie.objects.select_related("director").prefetch_related(
-                "genres", "actors"
-            ),
+            queryset=Movie.objects.select_related("director")
+            .prefetch_related("genres", "actors")
+            .order_by("id"),
         ).qs
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(movies, request)
@@ -239,4 +256,3 @@ class GenreDetailAPIView(APIView):
         genre = self.get_object(pk)
         genre.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
