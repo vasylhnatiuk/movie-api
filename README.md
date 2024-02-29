@@ -22,6 +22,7 @@ The Movie API is a Django RESTful web service that provides endpoints for managi
 - **Pagination:** Paginated responses for large datasets (default by 25).
 - **API Documentation:** Detailed documentation (Swagger) of available endpoints and request/response formats.
 - **Data Import:** Command-line `import_data` utility to import movie data from www.omdbapi.com.
+- **Testing:** all endpoints and filters are tested by `django.test` tests
 
 ---
 
